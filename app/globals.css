@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "PaletteMosaic";
+  src: url("/fonts/Palette_Mosaic/PaletteMosaic-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+html,
+body {
+  background-color: #0e0f11;
+  color: #e6e7eb;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* スクロールバーを非表示（スクロールは可能） */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* 全要素でスクロールバー非表示 */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.logo-font {
+  font-family: "PaletteMosaic", system-ui, -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", sans-serif;
+}
+
+/* 左→右に伸びるアンダーライン（ホバー時・マイリストボタン用） */
+.underline-slide {
+  position: relative;
+}
+.underline-slide::after {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 14px;
+  right: 14px;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease-out;
+}
+.underline-slide:hover::after {
+  transform: scaleX(1);
+}
+/* アンダーラインを常に表示（ホームへボタン用） */
+.underline-slide.underline-always::after {
+  transform: scaleX(1);
+}
+
