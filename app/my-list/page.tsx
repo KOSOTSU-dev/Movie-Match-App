@@ -237,9 +237,18 @@ export default function MyListPage() {
       <main className="min-h-screen bg-background px-4 py-4 md:px-8">
         <div className="mb-4 flex items-center justify-between gap-3">
           <h1 className="text-lg font-semibold md:text-2xl">マイリスト</h1>
+          {/* モバイル: 下部に寄せたチップ風ボタン */}
           <Link
             href="/discover"
             className="underline-slide underline-always shrink-0 rounded-full px-3 py-1.5 text-xs font-medium text-[#E6E7EB] hover:text-[#E6E7EB] md:hidden"
+            aria-label="ホームへ"
+          >
+            ホームへ
+          </Link>
+          {/* デスクトップ: 右上にホームへボタン（設定アイコンと同じ色） */}
+          <Link
+            href="/discover"
+            className="underline-slide underline-always hidden shrink-0 rounded-full px-3 py-1.5 text-xs font-medium text-[#E6E7EB] hover:text-[#E6E7EB] md:inline-flex"
             aria-label="ホームへ"
           >
             ホームへ
