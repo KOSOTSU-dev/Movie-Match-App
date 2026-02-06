@@ -979,7 +979,7 @@ export default function DiscoverPage() {
 
         {/* UI要素を上側のレイヤーに配置 */}
         <div className={`relative z-10 flex min-h-screen flex-col overflow-visible px-4 py-4 md:px-8 ${isVideoFullscreen ? "hidden" : ""}`}>
-          <section className="mb-4 flex flex-wrap items-start gap-6 overflow-visible text-xs md:text-sm">
+          <section className="sticky top-0 z-40 -mx-4 mb-1.5 flex flex-wrap items-start gap-6 overflow-visible bg-transparent px-4 py-2 md:-mx-8 md:mb-4 md:px-8 md:text-sm">
             {fallbackMessage && (
               <p className="w-full rounded-lg bg-amber-900/40 px-3 py-2 text-amber-200 text-xs">
                 {fallbackMessage}
@@ -997,11 +997,11 @@ export default function DiscoverPage() {
                 aria-haspopup="true"
               >
                 配信サービス
-                <svg className={`h-3 w-3 transition-transform ${isProviderPanelOpen ? "translate-y-0.5 rotate-180" : "group-hover/provider:translate-y-0.5"}`} fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <svg className={`h-3 w-3 transition-transform ${isProviderPanelOpen ? "translate-y-0.5 rotate-180" : ""}`} fill="currentColor" viewBox="0 0 24 24" aria-hidden>
                   <path d="M12 16l-6-6h12z" />
                 </svg>
               </p>
-              <div className={`absolute left-0 top-full z-50 mt-1 min-w-[400px] overflow-hidden rounded-lg border border-gray-700 bg-black/95 shadow-xl transition-[max-height,opacity] duration-300 ease-out ${isProviderPanelOpen ? "max-h-[360px] overflow-y-auto opacity-100" : "max-h-0 opacity-0 group-hover/provider:max-h-[360px] group-hover/provider:overflow-y-auto group-hover/provider:opacity-100"}`}>
+              <div className={`absolute left-0 top-full z-50 mt-1 min-w-[400px] overflow-hidden rounded-lg border border-gray-700 bg-black/95 shadow-xl transition-[max-height,opacity] duration-300 ease-out ${isProviderPanelOpen ? "max-h-[360px] overflow-y-auto opacity-100" : "max-h-0 opacity-0"}`}>
                 <div className="grid grid-cols-[repeat(4,minmax(88px,1fr))] gap-x-2 gap-y-1 p-2">
                   <GenreChip
                     label="Netflix"
@@ -1039,11 +1039,11 @@ export default function DiscoverPage() {
                 aria-haspopup="true"
               >
                 ジャンル
-                <svg className={`h-3 w-3 transition-transform ${isGenrePanelOpen ? "translate-y-0.5 rotate-180" : "group-hover/genre:translate-y-0.5"}`} fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <svg className={`h-3 w-3 transition-transform ${isGenrePanelOpen ? "translate-y-0.5 rotate-180" : ""}`} fill="currentColor" viewBox="0 0 24 24" aria-hidden>
                   <path d="M12 16l-6-6h12z" />
                 </svg>
               </p>
-              <div className={`absolute left-0 top-full z-50 mt-1 min-w-[400px] rounded-lg bg-black/95 shadow-xl transition-[max-height,opacity] duration-300 ease-out ${isGenrePanelOpen ? "max-h-[360px] overflow-y-auto opacity-100" : "max-h-0 overflow-hidden opacity-0 group-hover/genre:max-h-[360px] group-hover/genre:overflow-y-auto group-hover/genre:opacity-100"}`}>
+              <div className={`absolute left-0 top-full z-50 mt-1 min-w-[400px] rounded-lg bg-black/95 shadow-xl transition-[max-height,opacity] duration-300 ease-out ${isGenrePanelOpen ? "max-h-[360px] overflow-y-auto opacity-100" : "max-h-0 overflow-hidden opacity-0"}`}>
                 <div className="grid grid-cols-[repeat(4,minmax(88px,1fr))] gap-x-2 gap-y-1 p-2">
                   {genres.map((genre) => (
                     <GenreChip
@@ -1056,9 +1056,20 @@ export default function DiscoverPage() {
                 </div>
               </div>
             </div>
+
+            {/* モバイル版: 右端にマイリスト */}
+            {user && (
+              <Link
+                href="/my-list"
+                className="underline-slide ml-auto md:hidden rounded-full px-3 py-1 text-[11px] font-medium text-pink-400/80 hover:text-pink-400"
+                aria-label="マイリストを見る"
+              >
+                ♡マイリスト
+              </Link>
+            )}
           </section>
 
-          <section className="relative flex flex-1 flex-col items-center justify-center gap-4">
+          <section className="relative flex flex-1 flex-col items-center justify-start gap-4 pt-2 md:justify-center md:pt-0">
             {/* デスクトップ: 予告編エリアをクリックで全画面表示（ボタン類はz-20で上に表示） */}
             <div
               className="hidden md:block absolute inset-0 z-0 cursor-pointer"
@@ -1082,60 +1093,15 @@ export default function DiscoverPage() {
               <p className="text-sm text-gray-400">作品を読み込み中...</p>
             ) : currentMovie ? (
               <>
-                {/* モバイル版: 重なりカード + スワイプカード */}
-                <div className="md:hidden flex items-center justify-center min-h-[560px] relative">
-                  {/* 背面のカード（次の2枚を小さく表示） */}
-                  {movies[currentIndex + 2] && (
-                    <div
-                      className="absolute rounded-3xl overflow-hidden bg-card shadow-xl border border-white/5"
-                      style={{
-                        width: 360,
-                        height: 540,
-                        transform: "scale(0.86) translateY(24px)",
-                        zIndex: 0
-                      }}
-                    >
-                      {movies[currentIndex + 2].poster_path ? (
-                        <img
-                          src={`https://image.tmdb.org/t/p/w500${movies[currentIndex + 2].poster_path}`}
-                          alt=""
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-full w-full bg-gray-900" />
-                      )}
-                    </div>
-                  )}
-                  {movies[currentIndex + 1] && (
-                    <div
-                      className="absolute rounded-3xl overflow-hidden bg-card shadow-xl border border-white/5"
-                      style={{
-                        width: 360,
-                        height: 540,
-                        transform: "scale(0.92) translateY(12px)",
-                        zIndex: 1
-                      }}
-                    >
-                      {movies[currentIndex + 1].poster_path ? (
-                        <img
-                          src={`https://image.tmdb.org/t/p/w500${movies[currentIndex + 1].poster_path}`}
-                          alt=""
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-full w-full bg-gray-900" />
-                      )}
-                    </div>
-                  )}
-                  <div className="relative z-10">
-                    <SwipeCard
-                      movie={currentMovie}
-                      onSwipe={handleSwipe}
-                      synopsis={displaySynopsis}
-                      onInfoClick={() => setIsInfoModalOpen(true)}
-                      triggerSwipe={mobileSwipeTrigger}
-                    />
-                  </div>
+                {/* モバイル版: 単一カードのみ表示（スワイプ時のチラつき防止） */}
+                <div className="md:hidden flex items-start justify-center min-h-[560px] relative">
+                  <SwipeCard
+                    movie={currentMovie}
+                    onSwipe={handleSwipe}
+                    synopsis={displaySynopsis}
+                    onInfoClick={() => setIsInfoModalOpen(true)}
+                    triggerSwipe={mobileSwipeTrigger}
+                  />
                 </div>
 
                 {/* デスクトップ版: 左下に作品情報 / 中央下にアクション */}
@@ -1278,55 +1244,7 @@ export default function DiscoverPage() {
                   )}
                 </div>
 
-                {/* モバイル版: アクションボタン（アイコンボタン・押下でスワイプアニメーション） */}
-                <div className="mt-4 flex items-end justify-center gap-4 md:hidden">
-                  {/* BADボタン（紫のXアイコン） */}
-                  <button
-                    type="button"
-                    onClick={() => setMobileSwipeTrigger("left")}
-                    className="flex items-center justify-center h-14 w-14 rounded-full border-2 border-purple-500 bg-transparent text-purple-500 hover:bg-purple-500/20 transition-colors"
-                    aria-label="BAD"
-                  >
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={3}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                  {/* LIKEボタン（ピンクのハートアイコン） */}
-                  <button
-                    type="button"
-                    onClick={() => setMobileSwipeTrigger("right")}
-                    className="flex items-center justify-center h-14 w-14 rounded-full border-2 border-pink-500 bg-transparent text-pink-500 hover:bg-pink-500/20 transition-colors"
-                    aria-label="LIKE"
-                  >
-                    <svg
-                      className="h-6 w-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                    </svg>
-                  </button>
-                  {/* ♡マイリスト（LIKEの右隣・少し下にずらす） */}
-                  {user && (
-                    <Link
-                      href="/my-list"
-                      className="underline-slide self-end mb-1 rounded-full px-3 py-1.5 text-xs font-medium text-pink-400/80 hover:text-pink-400"
-                      aria-label="マイリストを見る"
-                    >
-                      ♡マイリスト
-                    </Link>
-                  )}
-                </div>
+                {/* モバイル版の BAD / Info / LIKE は SwipeCard 内に表示 */}
               </>
             ) : (
               <div className="text-center space-y-4">
@@ -1381,10 +1299,10 @@ function FilterChip({
     <button
       type="button"
       onClick={onClick}
-      className={`whitespace-nowrap flex-shrink-0 rounded-full px-3 py-1 text-xs ${active
-        ? "bg-emerald-500 text-black"
-        : "bg-gray-800 text-gray-200 hover:bg-gray-700"
-        }`}
+      className={`whitespace-nowrap flex-shrink-0 rounded-full px-3 py-1 text-xs border ${active
+        ? "border-emerald-400 text-emerald-300"
+        : "border-transparent text-gray-200 hover:border-gray-500"
+        } bg-transparent`}
     >
       {label}
     </button>
